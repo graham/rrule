@@ -11,7 +11,6 @@ import (
 // are easier to generate.
 type RecurrenceIterator struct {
 	rule        *RecurringRule
-	lastValue   time.Time
 	iterCounter int
 	iterBuffer  []time.Time
 
