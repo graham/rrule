@@ -13,7 +13,7 @@ GoDoc: https://godoc.org/github.com/graham/rrule
 	rule_checker, err := rrule.Parse(
 		"DTSTART;TZID=America/New_York:19970902T090000\n"+
 			"RRULE:FREQ=DAILY;COUNT=10",
-    )
+	)
 ```
 
 ## Recurrence Rule to String
@@ -27,7 +27,7 @@ GoDoc: https://godoc.org/github.com/graham/rrule
 	rule_checker, err := rrule.Parse(
 		"DTSTART;TZID=America/New_York:19970902T090000\n"+
 			"RRULE:FREQ=DAILY;COUNT=10",
-    )
+	)
 
 	iter := rule.Iterator()
 
