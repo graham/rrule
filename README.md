@@ -6,6 +6,7 @@ I was able to find libraries that did each of these features individually, but n
 
 The best way to understand how to use the library would be to look at the tests, I've implemented every example in the RFC as well as some others that I created from real world problems I've run into.
 
+GoDoc: https://godoc.org/github.com/graham/rrule
 
 ## Parsing from string
 ```
