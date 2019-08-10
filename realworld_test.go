@@ -42,6 +42,57 @@ func Test_real_event_for_fridays(t *testing.T) {
 	}
 }
 
+func Test_FrequencyHourly(t *testing.T) {
+	var DateStart = "DTSTART;TZID=America/New_York:20180902T090000\n"
+	var RuleString = "RRULE:FREQ=HOURLY;COUNT=5"
+
+	RuleShouldMatchDates(t,
+		DateStart+RuleString,
+		[]time.Time{
+			time.Date(2018, time.September, 2, 9, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 10, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 11, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 12, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 13, 0, 0, 0, targetLocation),
+		},
+	)
+
+}
+
+func Test_FrequencyMinutely(t *testing.T) {
+	var DateStart = "DTSTART;TZID=America/New_York:20180902T090000\n"
+	var RuleString = "RRULE:FREQ=MINUTELY;COUNT=5"
+
+	RuleShouldMatchDates(t,
+		DateStart+RuleString,
+		[]time.Time{
+			time.Date(2018, time.September, 2, 9, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 1, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 2, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 3, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 4, 0, 0, targetLocation),
+		},
+	)
+
+}
+
+func Test_FrequencySecondly(t *testing.T) {
+	var DateStart = "DTSTART;TZID=America/New_York:20180902T090000\n"
+	var RuleString = "RRULE:FREQ=SECONDLY;COUNT=5"
+
+	RuleShouldMatchDates(t,
+		DateStart+RuleString,
+		[]time.Time{
+			time.Date(2018, time.September, 2, 9, 0, 0, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 0, 1, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 0, 2, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 0, 3, 0, targetLocation),
+			time.Date(2018, time.September, 2, 9, 0, 4, 0, targetLocation),
+		},
+	)
+
+}
+
 func Test_RealWorldFromGoogle_WithException(t *testing.T) {
 	var DateStart = "DTSTART;TZID=America/New_York:20180902T090000\n"
 	var Exceptions = "EXDATE;TZID=America/New_York:20180916T090000\n"

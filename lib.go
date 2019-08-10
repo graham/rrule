@@ -56,6 +56,26 @@ const (
 	SECONDLY
 )
 
+func (fv FrequencyValue) String() string {
+	switch fv {
+	case YEARLY:
+		return "YEARLY"
+	case MONTHLY:
+		return "MONTHLY"
+	case WEEKLY:
+		return "WEEKLY"
+	case DAILY:
+		return "DAILY"
+	case HOURLY:
+		return "HOURLY"
+	case MINUTELY:
+		return "MINUTELY"
+	case SECONDLY:
+		return "SECONDLY"
+	}
+	panic("Unknown Frequency")
+}
+
 func weekdayFromShort(s string) time.Weekday {
 	switch s {
 	case "SU":
@@ -94,26 +114,6 @@ func shortFromWeekday(t time.Weekday) string {
 		return "SA"
 	}
 	panic("Unknown day")
-}
-
-func frequencyToString(fv FrequencyValue) string {
-	switch fv {
-	case YEARLY:
-		return "YEARLY"
-	case MONTHLY:
-		return "MONTHLY"
-	case WEEKLY:
-		return "WEEKLY"
-	case DAILY:
-		return "DAILY"
-	case HOURLY:
-		return "HOURLY"
-	case MINUTELY:
-		return "MINUTELY"
-	case SECONDLY:
-		return "SECONDLY"
-	}
-	panic("Unknown Frequency")
 }
 
 type ForDay struct {
@@ -469,7 +469,7 @@ func (rr *RecurringRule) RecurString() string {
 	// There is always a freq
 
 	rules = append(rules,
-		fmt.Sprintf("FREQ=%s", frequencyToString(rr.Frequency)))
+		fmt.Sprintf("FREQ=%s", rr.Frequency.String()))
 
 	if rr.Interval != 1 {
 		rules = append(rules,

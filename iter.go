@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+// should use github.com/jinzhu/copier
+
 // Creating occurences of a recurrece rule is non-trivial because some
 // fields allow positional or negative selection. In some cases possibilities
 // are generated and the correct events are selected from them.
@@ -342,6 +344,19 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 				if d.Second() == ri.rule.DtStart.Second() {
 					matches = append(matches, true)
 				}
+			}
+
+			// This seems like cheating, and it works because effectively
+			// every timestamp modified by seconds should work in this scenario.
+			// The logic however, doesn't seem super clear, so this should be
+			// rewritten in a way that isn't so:
+			//
+			//       "i dont know why it works, but it works."
+			//
+			// Secondly isn't tested aggressively via the RFC, and I doubt
+			// the recurrence rules are generally used with seconds.
+			if ri.rule.Frequency == SECONDLY {
+				matches = append(matches, true)
 			}
 
 			if len(ri.rule.ByYearDay) == 0 && len(ri.rule.ByMonthDay) == 0 &&
