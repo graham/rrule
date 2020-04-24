@@ -186,3 +186,26 @@ func Test_Parse_set_until_from_forever(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func Test_Parse_PositiveIndicatorIgnored(t *testing.T) {
+	var withPos = "DTSTART;TZID=America/New_York:19970902T090000\n" +
+		"RRULE:FREQ=MONTHLY;BYDAY=+1MO,+1TU"
+	wpRule, err := AssertToStringMatchesInput(withPos)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+
+	var noPos = "DTSTART;TZID=America/New_York:19970902T090000\n" +
+		"RRULE:FREQ=MONTHLY;BYDAY=1MO,1TU"
+	npRule, err := AssertToStringMatchesInput(noPos)
+	if err != nil {
+		t.Log(err)
+		t.Fail()
+	}
+
+	if wpRule.String() != npRule.String() {
+		t.Log("positive('+') indicator not ignored")
+		t.Fail()
+	}
+}
