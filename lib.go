@@ -380,6 +380,8 @@ func (rr *RecurringRule) handle_recur_rule_part(key string, value string) error 
 			if item[0] == '-' {
 				offset_dir = -1
 				item = item[1:]
+			} else if item[0] == '+' {
+				item = item[1:]
 			}
 
 			if unicode.IsDigit(rune(item[0])) && unicode.IsDigit(rune(item[1])) {
