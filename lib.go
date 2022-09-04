@@ -3,15 +3,15 @@
 //
 // Primary access to rules is done via the parse command.
 //
-//   rule, err := rrule.Parse("RRULE:FREQ=DAILY;COUNT=10")
+//	rule, err := rrule.Parse("RRULE:FREQ=DAILY;COUNT=10")
 //
 // Access to the occurences of a rule is via the Iterator struct.
 //
-//   iter := rule.Iterator()
+//	iter := rule.Iterator()
 //
-//   for iter.Step(&event) {
-//       ... process your event here.
-//   }
+//	for iter.Step(&event) {
+//	    ... process your event here.
+//	}
 //
 // Step will return false when you more results. Some events
 // recur forever, so be careful to ensure your loop will end.
@@ -442,7 +442,7 @@ func (rr *RecurringRule) handle_rule_chunk(value string) error {
 }
 
 func (rr *RecurringRule) Iterator() *RecurrenceIterator {
-	return &RecurrenceIterator{rule: rr}
+	return &RecurrenceIterator{rule: rr, hardLimit: -1}
 }
 
 func listOfIntsToCSV(values []int16) string {

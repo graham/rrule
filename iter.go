@@ -25,11 +25,26 @@ type RecurrenceIterator struct {
 
 	UseUserBefore bool
 	UseUserAfter  bool
+
+	hardLimit          int
+	isHardLimitReached bool
 }
 
 func (ri *RecurrenceIterator) Limit(i int) *RecurrenceIterator {
 	ri.UserLimit = i
 	return ri
+}
+
+// HardLimit is used to set a limit to iteration count.
+// If iterator tooks more steps than provided limit, it will return false
+// and IsHardLimitReached() == true.
+func (ri *RecurrenceIterator) HardLimit(limit int) *RecurrenceIterator {
+	ri.hardLimit = limit
+	return ri
+}
+
+func (ri *RecurrenceIterator) IsHardLimitReached() bool {
+	return ri.isHardLimitReached
 }
 
 func (ri *RecurrenceIterator) Before(b time.Time) *RecurrenceIterator {
@@ -165,9 +180,15 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 		return false
 	}
 
-	var shortcircuit_finish bool = false
+	var shortcircuitFinish bool = false
 
-	for len(ri.iterBuffer) == 0 && shortcircuit_finish == false {
+	for len(ri.iterBuffer) == 0 && shortcircuitFinish == false {
+		// Exit if we reached hard limit
+		if ri.hardLimit > 0 && ri.iterCounter > ri.hardLimit {
+			ri.isHardLimitReached = true
+			return false
+		}
+
 		// If we've made it here, we need to generate more results
 		next_base := getNextDateByFreqAndInterval(
 			ri.rule.DtStart,
@@ -322,6 +343,12 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 			// there are some special cases to be aware of that
 			// are not immediately obvious.
 
+			if len(ri.rule.ByMonthDay) == 0 && ri.rule.Frequency == MONTHLY {
+				if d.Day() == ri.rule.DtStart.Day() {
+					matches = append(matches, true)
+				}
+			}
+
 			if len(ri.rule.ByDay) == 0 && ri.rule.Frequency == WEEKLY {
 				if d.Weekday() == ri.rule.DtStart.Weekday() {
 					matches = append(matches, true)
@@ -363,9 +390,15 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 				len(ri.rule.ByDay) == 0 && ri.rule.Frequency == YEARLY {
 
 				var match bool = false
-				if d.Day() == ri.rule.DtStart.Day() {
+
+				if len(ri.rule.ByMonth) == 0 {
+					if d.YearDay() == ri.rule.DtStart.YearDay() {
+						match = true
+					}
+				} else if d.Day() == ri.rule.DtStart.Day() {
 					match = true
 				}
+
 				matches = append(matches, match)
 			}
 
@@ -424,7 +457,7 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 					matches = append(matches, false)
 					// Since we can only generate events after this one
 					// we are done.
-					shortcircuit_finish = true
+					shortcircuitFinish = true
 				}
 			}
 
@@ -468,7 +501,7 @@ func (ri *RecurrenceIterator) Step(t *time.Time) bool {
 		return true
 	}
 
-	return !shortcircuit_finish
+	return !shortcircuitFinish
 }
 
 func getNextDateByFreqAndInterval(last time.Time, freq FrequencyValue, interval int) time.Time {
