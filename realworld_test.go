@@ -271,6 +271,65 @@ func Test_ParseJustRule(t *testing.T) {
 	}
 }
 
+func Test_MonthlyFreqWithoutByMonthDay(t *testing.T) {
+	var rule = "DTSTART;TZID=America/New_York:20200102T090000\nRRULE:FREQ=MONTHLY;COUNT=5"
+	var expected = time.Date(2020, time.May, 02, 9, 0, 0, 0, targetLocation)
+
+	r, err := Parse(rule)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	iter := r.Iterator()
+
+	var out time.Time
+	for iter.Step(&out) {
+	}
+
+	if !out.Equal(expected) {
+		t.Fatal(out, expected)
+	}
+}
+
+func Test_YearlyFreqWithoutByYearDay(t *testing.T) {
+	var rule = "DTSTART;TZID=America/New_York:20200102T090000\nRRULE:FREQ=YEARLY;COUNT=5"
+	var expected = time.Date(2024, time.January, 02, 9, 0, 0, 0, targetLocation)
+
+	r, err := Parse(rule)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	iter := r.Iterator()
+
+	var out time.Time
+	for iter.Step(&out) {
+	}
+
+	if !out.Equal(expected) {
+		t.Fatal(out, expected)
+	}
+}
+
+func Test_IteratorHardLimit(t *testing.T) {
+	var value = "DTSTART;TZID=America/New_York:20200102T090000\nRRULE:FREQ=DAILY"
+
+	r, err := Parse(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	iter := r.Iterator().HardLimit(10)
+
+	var tm time.Time
+	for iter.Step(&tm) {
+	}
+
+	if !iter.IsHardLimitReached() {
+		t.Fatal("Hard limit is not reached")
+	}
+}
+
 func Benchmark_BasicParse(b *testing.B) {
 	var value string = "RRULE:FREQ=HOURLY;INTERVAL=3;COUNT=3"
 
